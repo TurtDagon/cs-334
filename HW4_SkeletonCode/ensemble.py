@@ -49,6 +49,19 @@ def random_forest(X_train, y_train, X_test, y_test, m, n_clf):
         accuracy : float - accuracy of random forest classifier on X_test samples
     """
     # TODO: Implement this function
+    #DecisionTreeClassifier(splitter="random")
+    y_preds = []
+    for _ in range(n_clf):
+        # bootsrap sample: draw n_train examples with replacement
+        X_boot, y_boot = utils.resample(X_train, y_train, replace=True)
+        clf = DecisionTreeClassifier(max_features=m) # m => all features, which gives plain bagging
+        clf.fit(X_boot, y_boot)
+        y_preds.append(clf.predict(X_test))
+
+    # combine tree pred
+    y_pred = majority_vote(y_preds)
+    accuracy = metrics.accuracy_score(y_test, y_pred)
+    
     return accuracy
 
 
